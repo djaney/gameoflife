@@ -24,10 +24,16 @@ def main():
       min_y = max(y-1,0)
       max_y = min(y+2, grid.shape[1])
 
+
+      # crop the nearby
       near = grid[min_x:max_x,min_y:max_y]
-      population = np.sum(near)
+
+      # nearby minus the current
+      population = np.sum(near) - curr
+
       next_val = 0
 
+      # life rules
       if curr == 1 and population < 2:
         next_val = 0
       elif curr == 1 and (population == 2 or population == 3):
@@ -48,8 +54,12 @@ def main():
 
 def render(grid, wait_time):
   
-  img = np.repeat(grid[:, :, np.newaxis].astype(np.float32), 3, axis=2)
-  img = abs(img - 1)
+  # inverse
+  inv = abs(grid - 1)
+
+  # create image numpy
+  img = np.repeat(inv[:, :, np.newaxis].astype(np.float32), 3, axis=2)
+  # resize
   img = cv2.resize(img, dsize=SCREEN_SIZE, interpolation=cv2.INTER_NEAREST)
   cv2.imshow("Life", img)
   cv2.waitKey(wait_time)
